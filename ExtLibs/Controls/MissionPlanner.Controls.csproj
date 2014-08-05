@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MissionPlanner.Controls</RootNamespace>
     <AssemblyName>MissionPlanner.Controls</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -252,6 +253,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="HSI.resx">
       <DependentUpon>HSI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HUD.resx">
+      <DependentUpon>HUD.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImageLabel.resx">
       <DependentUpon>ImageLabel.cs</DependentUpon>
