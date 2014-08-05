@@ -376,6 +376,12 @@
     <Compile Include="GCSViews\ConfigurationView\ConfigWizard.Designer.cs">
       <DependentUpon>ConfigWizard.cs</DependentUpon>
     </Compile>
+    <Compile Include="GCSViews\CustomLog.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GCSViews\CustomLog.Designer.cs">
+      <DependentUpon>CustomLog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Joystick\Joy_Do_Repeat_Servo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -576,6 +582,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigRawParams.zh-Hans.resx">
       <DependentUpon>ConfigRawParams.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\CustomLog.resx">
+      <DependentUpon>CustomLog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightPlanner.zh-Hant.resx">
       <DependentUpon>FlightPlanner.cs</DependentUpon>

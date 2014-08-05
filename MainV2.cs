@@ -1904,6 +1904,8 @@ namespace MissionPlanner
             MyView.AddScreen(new MainSwitcher.Screen("Simulation", Simulation, true));
             MyView.AddScreen(new MainSwitcher.Screen("Terminal", new GCSViews.Terminal(), false));
             MyView.AddScreen(new MainSwitcher.Screen("Help", new GCSViews.Help(), false));
+            // CHM - add screen
+            MyView.AddScreen(new MainSwitcher.Screen("CustomLog", new GCSViews.CustomLog(), false));
 
             // init button depressed - ensures correct action
             //int fixme;
@@ -2429,11 +2431,12 @@ namespace MissionPlanner
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            try
+            MyView.ShowScreen("CustomLog");
+            /*try
             {
                 System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=mich146%40hotmail%2ecom&lc=AU&item_name=Michael%20Oborne&no_note=0&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHostedGuest");
             }
-            catch { CustomMessageBox.Show("Link open failed. check your default webpage association"); }
+            catch { CustomMessageBox.Show("Link open failed. check your default webpage association"); }*/
         }
 
         [StructLayout(LayoutKind.Sequential)]
