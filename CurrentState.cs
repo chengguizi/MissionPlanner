@@ -11,6 +11,7 @@ using System.Collections;
 
 namespace MissionPlanner
 {
+    // CHM - This looks like the place where all the MAVlink data is stored
     public class CurrentState : ICloneable
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -40,6 +41,7 @@ namespace MissionPlanner
         private float _groundcourse = 0;
 
         // position
+        // CHM - GPS position? to be confirmed
         [DisplayText("Latitude (dd)")]
         public double lat { get; set; }
         [DisplayText("Longitude (dd)")]
@@ -74,6 +76,7 @@ namespace MissionPlanner
         private float _alt = 0;
         [DisplayText("Gps Status")]
         public float gpsstatus { get; set; }
+        // CHM - HDOP
         [DisplayText("Gps HDOP")]
         public float gpshdop { get; set; }
         [DisplayText("Sat Count")]
@@ -447,6 +450,7 @@ namespace MissionPlanner
         public byte raterc { get; set; }
 
         // reference
+        // CHM - datetime and gps time
         public DateTime datetime { get; set; }
         public DateTime gpstime { get; set; }
 

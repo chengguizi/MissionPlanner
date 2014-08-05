@@ -44,6 +44,7 @@ namespace MissionPlanner
 
         public event ProgressEventHandler Progress;
 
+        // CHM - place where ".MAV" is declared?
         public MAVState MAV = new MAVState();
 
         public class MAVState
@@ -72,6 +73,7 @@ namespace MissionPlanner
             /// <summary>
             /// the static global state of the currently connected MAV
             /// </summary>
+            // CHM - the place "cs" is declared
             public CurrentState cs = new CurrentState();
             /// <summary>
             /// mavlink remote sysid

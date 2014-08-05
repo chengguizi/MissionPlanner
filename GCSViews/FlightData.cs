@@ -697,7 +697,7 @@ namespace MissionPlanner.GCSViews
                     try
                     {
                         //System.Threading.Thread.Sleep(1000);
-
+                        // CHM - looks like requesting refresh rate of data from MAVlink
                         //comPort.requestDatastream((byte)MissionPlanner.MAVLink09.MAV_DATA_STREAM.RAW_CONTROLLER, 0); // request servoout
                         MainV2.comPort.requestDatastream(MAVLink.MAV_DATA_STREAM.EXTENDED_STATUS, MainV2.comPort.MAV.cs.ratestatus); // mode
                         MainV2.comPort.requestDatastream(MAVLink.MAV_DATA_STREAM.POSITION, MainV2.comPort.MAV.cs.rateposition); // request gps

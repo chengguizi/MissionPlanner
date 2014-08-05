@@ -632,5 +632,10 @@ namespace MissionPlanner.GCSViews
             }
             catch { }
         }
+
+        private void TXT_terminal_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
