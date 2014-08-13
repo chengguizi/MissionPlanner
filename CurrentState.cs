@@ -14,6 +14,8 @@ namespace MissionPlanner
     // CHM - This looks like the place where all the MAVlink data is stored
     public class CurrentState : ICloneable
     {
+        // CHM - custom static variable
+        static uint _last_namedvaluef_update = 0;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         // multipliers
         public float multiplierdist = 1;
@@ -79,6 +81,9 @@ namespace MissionPlanner
         // CHM - HDOP
         [DisplayText("Gps HDOP")]
         public float gpshdop { get; set; }
+        // CHM - add VDOP
+        [DisplayText("Gps VDOP")]
+        public float gpsvdop { get; set; }
         [DisplayText("Sat Count")]
         public float satcount { get; set; }
 
@@ -379,6 +384,15 @@ namespace MissionPlanner
         public float brklevel { get; set; }
         public bool armed { get; set; }
 
+        // CHM debug variables
+        public class mydebug_t
+        {
+            public string name;
+            public float value;
+        };
+
+        public List<mydebug_t> mydebug = new List<mydebug_t>();
+
         // 3dr radio
         [DisplayText("3DR Radio rssi")]
         public float rssi { get; set; }
@@ -671,6 +685,7 @@ namespace MissionPlanner
                     {
                         var asac = bytearray.ByteArrayToStructure<MAVLink.mavlink_airspeed_autocal_t>(6);
 
+                        // CHM - GPS velocities is in mavlink_airspeed_autocal_t
                         asratio = asac.ratio;
                     }
 
@@ -789,10 +804,14 @@ namespace MissionPlanner
                         }
                     }
 
-
+                    // CHM MAVLink.MAVLINK_MSG_ID.XXX is a enum type,
+                    // looks like .NAMED_VALUE_INT and .NAMED_VALUE_FLOAT is useful to me
+                    //
+                    // packets is a 2D array. It seems like that it stores most recent data of MAV packets
                     bytearray = mavinterface.MAV.packets[(byte)MAVLink.MAVLINK_MSG_ID.SYS_STATUS];
                     if (bytearray != null)
                     {
+                        // CHM - 6 is the position in the byte array where the packet starts (read more:Extension Methods)
                         var sysstatus = bytearray.ByteArrayToStructure<MAVLink.mavlink_sys_status_t>(6);
 
                         load = (float)sysstatus.load / 10.0f;
@@ -809,6 +828,7 @@ namespace MissionPlanner
 
                         if (sensors_health.gps != sensors_enabled.gps)
                         {
+                            // CHM - Spot the voice!!!!
                             messageHigh = "Bad GPS Health";
                             messageHighTime = DateTime.Now;
                         }
@@ -844,7 +864,7 @@ namespace MissionPlanner
                             //messageHighTime = DateTime.Now;
                         }
                         
-
+                        // CHM - This is to clear the MAV packet after reading once.
                         mavinterface.MAV.packets[(byte)MAVLink.MAVLINK_MSG_ID.SYS_STATUS] = null;
                     }
 
@@ -903,6 +923,8 @@ namespace MissionPlanner
                             lat = gps.lat * 1.0e-7f;
                             lng = gps.lon * 1.0e-7f;
 
+                            //CHM - altasl is in meter
+                            // gps.alt is in milimeter, ABOVE SEA LEVEL
                             altasl = gps.alt / 1000.0f;
                            // alt = gps.alt; // using vfr as includes baro calc
                         }
@@ -911,9 +933,11 @@ namespace MissionPlanner
                         //                    Console.WriteLine("gpsfix {0}",gpsstatus);
 
                         gpshdop = (float)Math.Round((double)gps.eph / 100.0,2);
+                        gpsvdop = (float)Math.Round((double)gps.epv / 100.0, 2);
 
                         satcount = gps.satellites_visible;
 
+                        // CHM - groundspeed is in meter
                         groundspeed = gps.vel * 1.0e-2f;
                         groundcourse = gps.cog * 1.0e-2f;
 
@@ -978,6 +1002,7 @@ namespace MissionPlanner
 
                         // the new arhs deadreckoning may send 0 alt and 0 long. check for and undo
 
+                        // CHM - alt is relative altitude , in meters
                         alt = loc.relative_alt / 1000.0f;
 
 
@@ -1114,6 +1139,7 @@ namespace MissionPlanner
                     {
                         var vfr = bytearray.ByteArrayToStructure<MAVLink.mavlink_vfr_hud_t>(6);
 
+                        // CHM - another place with ground speed
                         groundspeed = vfr.groundspeed;
 
                         airspeed = vfr.airspeed;
@@ -1140,6 +1166,42 @@ namespace MissionPlanner
                         freemem = mem.freemem;
                         brklevel = mem.brkval;
                     }
+
+                    ///// CHM - TRY new MAVLINK message
+                    bytearray = mavinterface.MAV.packets[(byte)MAVLink.MAVLINK_MSG_ID.NAMED_VALUE_FLOAT];
+                    if (bytearray != null)
+                    {
+                       
+                        var namedvaluef = bytearray.ByteArrayToStructure<MAVLink.mavlink_named_value_float_t>(6);
+                        if (_last_namedvaluef_update != namedvaluef.time_boot_ms)
+                        {
+                            //mydebug.name = namedvaluef.name.ToString();
+
+                                
+
+                            mydebug.Add(new mydebug_t());
+
+                            //messageHigh = "New debug message" + mydebug.Count.ToString();
+                            //messageHighTime = DateTime.Now;
+                            
+                            string tempname = Encoding.ASCII.GetString(namedvaluef.name);
+                            int pos = tempname.IndexOf('\0');
+                            if (pos != -1)
+                            {
+                                tempname = tempname.Substring(0, pos);
+                            }
+
+                            mydebug[mydebug.Count - 1].name = tempname;
+                            mydebug[mydebug.Count - 1].value = namedvaluef.value;
+                            _last_namedvaluef_update = namedvaluef.time_boot_ms;
+                        }
+
+                    }
+
+                    /////////////////////
+
+
+
                 }
 
                 //Console.Write(DateTime.Now.Millisecond + " start ");
