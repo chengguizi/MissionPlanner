@@ -1605,6 +1605,7 @@ namespace MissionPlanner.Controls
 
                 if (failsafe == true)
                 {
+                    // CHM - the function to draw things on HUD
                     drawstring(graphicsObject, "FAILSAFE", font, fontsize + 20, (SolidBrush)Brushes.Red, -85, halfheight / -5);
                     statuslast = status;
                 }

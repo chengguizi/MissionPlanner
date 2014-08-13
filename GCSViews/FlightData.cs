@@ -679,6 +679,7 @@ namespace MissionPlanner.GCSViews
             {
                 if (threadrun == 0) { return; }
 
+                // CHM - if giveComport is true, the main loop sleep. Giving way to other process
                 if (MainV2.comPort.giveComport == true)
                 {
                     System.Threading.Thread.Sleep(50);
