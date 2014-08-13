@@ -701,6 +701,7 @@ Please check the following
 
             giveComport = true;
 
+            // CHM - This is how MAVlink message is being sent
             // param type is set here, however it is always sent over the air as a float 100int = 100f.
             var req = new mavlink_param_set_t { target_system = MAV.sysid, target_component = MAV.compid, param_type = (byte)param_types[paramname] };
 
@@ -724,6 +725,7 @@ Please check the following
                     if (retrys > 0)
                     {
                         log.Info("setParam Retry " + retrys);
+                        // CHM - This is the critical message to send a MAVlink
                         generatePacket((byte)MAVLINK_MSG_ID.PARAM_SET, req);
                         start = DateTime.Now;
                         retrys--;
@@ -1368,6 +1370,7 @@ Please check the following
                 buffer = readPacket();
                 if (buffer.Length > 5)
                 {
+                    // CHM - byte 5 is always the Message ID, according to MAVlink protocol
                     if (buffer[5] == (byte)MAVLINK_MSG_ID.COMMAND_ACK)
                     {
 
@@ -2541,6 +2544,7 @@ Please check the following
                     lock (objlock)
                     {
                         MAV.packets[buffer[5]] = buffer;
+                        // CHM - packetseencount, what is this? the number of a particular Message ID seen?
                         MAV.packetseencount[buffer[5]]++;
                     }
 
@@ -2548,6 +2552,10 @@ Please check the following
 
                     if (debugmavlink)
                         DebugPacket(buffer);
+                    /*if (buffer[5] == (byte)MAVLink.MAVLINK_MSG_ID.DEBUG ||
+                        buffer[5] == (byte)MAVLink.MAVLINK_MSG_ID.NAMED_VALUE_FLOAT
+                        )
+                        DebugPacket(buffer);*/
 
                     if (buffer[5] == (byte)MAVLink.MAVLINK_MSG_ID.STATUSTEXT) // status text
                     {
