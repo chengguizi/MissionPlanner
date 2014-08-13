@@ -1905,7 +1905,7 @@ namespace MissionPlanner
             MyView.AddScreen(new MainSwitcher.Screen("Terminal", new GCSViews.Terminal(), false));
             MyView.AddScreen(new MainSwitcher.Screen("Help", new GCSViews.Help(), false));
             // CHM - add screen
-            MyView.AddScreen(new MainSwitcher.Screen("CustomLog", new GCSViews.CustomLog(), false));
+            MyView.AddScreen(new MainSwitcher.Screen("CustomLog", new GCSViews.CustomLog(), true));
 
             // init button depressed - ensures correct action
             //int fixme;
