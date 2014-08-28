@@ -51,7 +51,7 @@ namespace MissionPlanner.Utilities
 
             while (run)
             {
-                log.Info("adsb connect loop");
+                //log.Info("adsb connect loop");
                 //custom
                 try
                 {

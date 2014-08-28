@@ -204,6 +204,7 @@ namespace MissionPlanner
         internal float packetsnotlost = 0;
         DateTime packetlosttimer = DateTime.MinValue;
 
+        //public Mavlink.mavlinkform myMAVform;
         public MAVLinkInterface()
         {
             // init fields
@@ -237,6 +238,8 @@ namespace MissionPlanner
             this.packetlosttimer = DateTime.MinValue;
             this.lastbad = new byte[2];
 
+           
+
         }
 
         public void Close()
@@ -266,6 +269,8 @@ namespace MissionPlanner
                     BaseStream.Close();
             }
             catch { }
+            // chm - debug
+           // myMAVform.ShowDialog();
         }
 
         public void Open()
@@ -2300,12 +2305,30 @@ Please check the following
                             {
                                 // check new line is valid
                                 if (buildplaintxtline.Length > 3)
-                                    plaintxtline = buildplaintxtline;
+                                   plaintxtline = buildplaintxtline;
+                                MainV2.consoleString += plaintxtline + Environment.NewLine;
 
+                                //MainV2.TextForm.textBox1.AppendText("dd");
+                                //MainV2.TextForm.Show();
+                                // CHM - the console text
+                              /*  if (myMAVform==null)
+                                {
+                                    myMAVform = new Mavlink.mavlinkform();
+                                    //
+                                }*/
+                                
+                               // myMAVform.textBox1.AppendText(new String(plaintxtline.ToCharArray()));
+                               // myMAVform.textBox1.AppendText(Environment.NewLine);
+                                //myMAVform.ShowDialog();
+                                //myMAVform.Refresh();
+                                
+
+                                //MissionPlanner.GCSViews.CustomLog.ControlAccessibleObject
+                                //MainV2.View.screens.Find(x => x.Name.Contains("CustomLog")).my;
                                 // reset for next line
                                 buildplaintxtline = "";
                             }
-
+                            // CHM the place where console message received
                             TCPConsole.Write(buffer[0]);
                             Console.Write((char)buffer[0]);
                             buildplaintxtline += (char)buffer[0];
@@ -2431,7 +2454,8 @@ Please check the following
 
             if (bpstime.Second != DateTime.Now.Second && !logreadmode && BaseStream.IsOpen)
             {
-                Console.Write("bps {0} loss {1} left {2} mem {3}      \n", bps1, synclost, BaseStream.BytesToRead, System.GC.GetTotalMemory(false) / 1024 / 1024.0);
+                // chm - edit
+                //Console.Write("bps {0} loss {1} left {2} mem {3}      \n", bps1, synclost, BaseStream.BytesToRead, System.GC.GetTotalMemory(false) / 1024 / 1024.0);
                 bps2 = bps1; // prev sec
                 bps1 = 0; // current sec
                 bpstime = DateTime.Now;

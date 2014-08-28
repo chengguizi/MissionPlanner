@@ -33,6 +33,8 @@ namespace MissionPlanner
 {
     public partial class MainV2 : Form
     {
+        public static chmTextForm TextForm;
+        public static String consoleString;
         private static readonly ILog log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -591,8 +593,8 @@ namespace MissionPlanner
                 //    MainV2.config["fixparams"] = 1;
             }
 
-
-
+            TextForm = new chmTextForm();
+            consoleString = "";
         }
 
         private void BGLoadAirports(object nothing)
@@ -754,6 +756,7 @@ namespace MissionPlanner
 
         private void MenuConnect_Click(object sender, EventArgs e)
         {
+
             comPort.giveComport = false;
 
             log.Info("MenuConnect Start");
@@ -766,6 +769,16 @@ namespace MissionPlanner
                     return;
                 }
             }
+            if (comPort.BaseStream.IsOpen)
+            {
+                TextForm.textBox1.Text = consoleString;
+                TextForm.Show();
+                //comPort.myMAVform.ShowDialog();
+                //MessageBox.Show(comPort.myMAVform.textBox1.Text);
+                //File.WriteAllText(@"D:\mavlink_console.txt", comPort.myMAVform.textBox1.Text);
+            }
+                
+                    
 
             try
             {
@@ -786,15 +799,19 @@ namespace MissionPlanner
             comPort.rawlogfile = null;
 
             // decide if this is a connect or disconnect
+            // CHM - looks like the code to determine whether mavlink is connected
             if (comPort.BaseStream.IsOpen)
             {
                 log.Info("We are disconnecting");
                 try
-                {
+                {                 
+                    
+                   // MessageBox.Show(comPort.plaintxtline);
                     if (speechEngine != null) // cancel all pending speech
                         speechEngine.SpeakAsyncCancelAll();
 
                     comPort.BaseStream.DtrEnable = false;
+                    
                     comPort.Close();
                 }
                 catch (Exception ex)
@@ -1906,7 +1923,7 @@ namespace MissionPlanner
             MyView.AddScreen(new MainSwitcher.Screen("Help", new GCSViews.Help(), false));
             // CHM - add screen
             MyView.AddScreen(new MainSwitcher.Screen("CustomLog", new GCSViews.CustomLog(), true));
-
+            
             // init button depressed - ensures correct action
             //int fixme;
 

@@ -114,7 +114,7 @@ namespace MissionPlanner.Utilities
             if (dist > 9999)
                 return PointLatLngAlt.Zero;
 
-            Console.WriteLine("pitch " + pitchangle.ToString("0.000") + " yaw " + yawangle.ToString("0.000") + " dist" + dist.ToString("0.000"));
+            //Console.WriteLine("pitch " + pitchangle.ToString("0.000") + " yaw " + yawangle.ToString("0.000") + " dist" + dist.ToString("0.000"));
 
             PointLatLngAlt newpos = currentlocation.newpos( yawangle + MainV2.comPort.MAV.cs.yaw, dist);
 

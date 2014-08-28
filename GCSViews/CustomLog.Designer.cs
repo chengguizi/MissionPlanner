@@ -38,11 +38,14 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.DebugGraph1 = new ZedGraph.ZedGraphControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.timer3 = new System.Windows.Forms.Timer(this.components);
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.checkheading = new System.Windows.Forms.Timer(this.components);
+            this.txt_ch6 = new System.Windows.Forms.Label();
+            this.tim_ch6 = new System.Windows.Forms.Timer(this.components);
             this.currentStateBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -105,6 +108,12 @@
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // checkedListBox1
+            // 
+            this.checkedListBox1.FormattingEnabled = true;
+            resources.ApplyResources(this.checkedListBox1, "checkedListBox1");
+            this.checkedListBox1.Name = "checkedListBox1";
+            // 
             // DebugGraph1
             // 
             resources.ApplyResources(this.DebugGraph1, "DebugGraph1");
@@ -133,11 +142,21 @@
             this.timer3.Interval = 10;
             this.timer3.Tick += new System.EventHandler(this.timer3_Tick);
             // 
-            // checkedListBox1
+            // checkheading
             // 
-            this.checkedListBox1.FormattingEnabled = true;
-            resources.ApplyResources(this.checkedListBox1, "checkedListBox1");
-            this.checkedListBox1.Name = "checkedListBox1";
+            this.checkheading.Enabled = true;
+            this.checkheading.Interval = 2000;
+            this.checkheading.Tick += new System.EventHandler(this.checkheading_Tick);
+            // 
+            // txt_ch6
+            // 
+            resources.ApplyResources(this.txt_ch6, "txt_ch6");
+            this.txt_ch6.Name = "txt_ch6";
+            // 
+            // tim_ch6
+            // 
+            this.tim_ch6.Enabled = true;
+            this.tim_ch6.Tick += new System.EventHandler(this.tim_ch6_Tick);
             // 
             // currentStateBindingSource
             // 
@@ -147,6 +166,7 @@
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.txt_ch6);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.Debuglabel);
             this.Controls.Add(this.label1);
@@ -164,7 +184,6 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox myGPSlog;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label Debuglabel;
@@ -177,5 +196,9 @@
         private System.Windows.Forms.Timer timer3;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.CheckedListBox checkedListBox1;
+        private System.Windows.Forms.Timer checkheading;
+        private System.Windows.Forms.Label txt_ch6;
+        private System.Windows.Forms.Timer tim_ch6;
+        public System.Windows.Forms.TextBox myGPSlog;
     }
 }

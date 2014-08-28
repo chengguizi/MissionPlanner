@@ -2805,7 +2805,7 @@ namespace MissionPlanner.GCSViews
 
         private void hud1_Resize(object sender, EventArgs e)
         {
-            Console.WriteLine("HUD resize " + hud1.Width + " " + hud1.Height);// +"\n"+ System.Environment.StackTrace);
+            //Console.WriteLine("HUD resize " + hud1.Width + " " + hud1.Height);// +"\n"+ System.Environment.StackTrace);
 
             SubMainLeft.SplitterDistance = hud1.Height;
         }

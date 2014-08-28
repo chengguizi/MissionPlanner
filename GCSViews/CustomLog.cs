@@ -19,6 +19,8 @@ namespace MissionPlanner.GCSViews
 
         List<RollingPointPairList> list = new List<RollingPointPairList>();
 
+
+
         public CustomLog()
         {
             InitializeComponent();
@@ -95,7 +97,7 @@ namespace MissionPlanner.GCSViews
         bool last_armed = true;
         private void timer1_Tick(object sender, EventArgs e)
         {
-            timercount++;
+            
                 ///MainV2.speechEngine.SpeakAsync("Speak test");
             ///
             
@@ -115,21 +117,25 @@ namespace MissionPlanner.GCSViews
                 {
                     label1.Text = "=========DISARMED=========";
                 }
+                timercount = 0;
                 return;
             }
             else if (!MainV2.comPort.MAV.cs.armed)
             {
+                timercount = 0;
                 return;
             }
+            timercount++;
             String mystring;
-            mystring = "Time:" + MainV2.comPort.MAV.cs.gpstime.ToLongTimeString();
-            mystring += " Mode:" + MainV2.comPort.MAV.cs.mode + " ";
-            mystring += " Latitude:" + MainV2.comPort.MAV.cs.lat.ToString() + " Longitude:" + MainV2.comPort.MAV.cs.lng.ToString();
+            mystring = timercount.ToString();
+            mystring += " " + MainV2.comPort.MAV.cs.lat.ToString() + " "+ MainV2.comPort.MAV.cs.lng.ToString();
+            mystring += " " + MainV2.comPort.MAV.cs.mode ;
             
             
 
             myGPSlog.AppendText(mystring);
             myGPSlog.AppendText(Environment.NewLine);
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -145,7 +151,7 @@ namespace MissionPlanner.GCSViews
             
         }
 
-
+        
         private void timer2_Tick_1(object sender, EventArgs e)
         {
             double time = (Environment.TickCount - tickStart) / 1000.0;
@@ -186,6 +192,10 @@ namespace MissionPlanner.GCSViews
             catch { }
             // Force a redraw
             DebugGraph1.Invalidate();
+
+
+
+
         }
 
         List<string> displayname = new List<string>();
@@ -258,6 +268,98 @@ namespace MissionPlanner.GCSViews
             }
                 
         }
+
+        int _last_yaw = 1000;
+
+        public int warp180(int a, int b)
+        {
+            int c = Math.Abs(a - b);
+            if (c>180)
+            {
+                c = 360 - c;
+            }
+            return c;
+        }
+
+
+        private void checkheading_Tick(object sender, EventArgs e)
+        {
+            int yaw = (int)MainV2.comPort.MAV.cs.yaw;
+
+                if (warp180(yaw, _last_yaw) < 5 && _last_yaw <=360)
+                    yaw = _last_yaw;
+
+                if (yaw <22.5 || yaw > 337.5)
+                {
+                    MainV2.speechEngine.SpeakAsync("north");
+                }
+                else if (yaw > 22.5 && yaw < 67.5)
+                {
+                    MainV2.speechEngine.SpeakAsync("north east");
+                }
+                else if (yaw > 67.5 && yaw < 112.5)
+                {
+                    MainV2.speechEngine.SpeakAsync("east");
+                }
+                else if (yaw > 112.5 && yaw < 157.5)
+                {
+                    MainV2.speechEngine.SpeakAsync("south east");
+                }
+                else if (yaw > 157.5 && yaw < 202.5)
+                {
+                    MainV2.speechEngine.SpeakAsync("south");
+                }
+                else if (yaw > 202.5 && yaw < 247.5)
+                {
+                    MainV2.speechEngine.SpeakAsync("south west");
+                }
+                else if (yaw >247.5 && yaw < 292.5)
+                {
+                    MainV2.speechEngine.SpeakAsync("west");
+                }
+                else if (yaw > 292.5&& yaw < 337.5)
+                {
+                    MainV2.speechEngine.SpeakAsync("north west");
+                }
+                else
+                {
+                    MainV2.speechEngine.SpeakAsync("error heading");
+                }
+
+
+                _last_yaw = yaw;
+
+
+           /* if (_last_yaw > 360)
+            {
+                _last_yaw = yaw;
+            }*/
+                
+        }
+
+        private void tim_ch6_Tick(object sender, EventArgs e)
+        {
+            ////////////////////
+            /// for heading check
+            /// 
+            float ch6in = MainV2.comPort.MAV.cs.ch6in;
+            if (MainV2.comPort.BaseStream.IsOpen)
+            {
+
+                txt_ch6.Text = "Channel 6 pwm = " + ch6in.ToString();
+                if(ch6in>1500.0 && !checkheading.Enabled)
+                    checkheading.Start();
+                else if (ch6in<=1500.0)
+                    checkheading.Stop();
+            }
+            else
+            {
+                txt_ch6.Text = "Link lost";
+                checkheading.Stop();
+            }
+        }
+
+        public String myTextBox { set { myGPSlog.AppendText(value); } }
 
 
     }
