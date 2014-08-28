@@ -25,10 +25,6 @@ namespace MissionPlanner
 
         static double[] ans;
         static double[] ans2;
-        
-        static float com2ofsx;
-        static float com2ofsy; 
-        static float com2ofsz;
        
         /// <summary>
         /// Self contained process tlog and save/display offsets
@@ -132,9 +128,9 @@ namespace MissionPlanner
                 }
 
                 // values - offsets are 0
-                float rawmx = packet.xmag - com2ofsx;
-                float rawmy = packet.ymag - com2ofsy;
-                float rawmz = packet.zmag - com2ofsz;
+                float rawmx = packet.xmag;
+                float rawmy = packet.ymag;
+                float rawmz = packet.zmag;
 
                 // add data
                 lock (datacompass2)
@@ -191,14 +187,15 @@ namespace MissionPlanner
             bool havecompass2 = false;
 
             //compass2 get mag2 offsets
-            float com2ofsx = 0;
-            float com2ofsy = 0;
-            float com2ofsz = 0;
             if (MainV2.comPort.MAV.param.ContainsKey("COMPASS_OFS2_X"))
             {
-                com2ofsx = MainV2.comPort.GetParam("COMPASS_OFS2_X");
-                com2ofsy = MainV2.comPort.GetParam("COMPASS_OFS2_Y");
-                com2ofsz = MainV2.comPort.GetParam("COMPASS_OFS2_Z");
+                //com2ofsx = MainV2.comPort.GetParam("COMPASS_OFS2_X");
+                //com2ofsy = MainV2.comPort.GetParam("COMPASS_OFS2_Y");
+                //com2ofsz = MainV2.comPort.GetParam("COMPASS_OFS2_Z");
+
+                MainV2.comPort.setParam("COMPASS_OFS2_X", 0);
+                MainV2.comPort.setParam("COMPASS_OFS2_Y", 0);
+                MainV2.comPort.setParam("COMPASS_OFS2_Z", 0);
 
                 havecompass2 = true;
             }
@@ -270,7 +267,7 @@ namespace MissionPlanner
                 // get the current estimated centerpoint
                 //new HIL.Vector3((float)-((maxx + minx) / 2), (float)-((maxy + miny) / 2), (float)-((maxz + minz) / 2));
 
-                // run lsq every seconds when more than 100 datapoints
+                // run lsq every second when more than 100 datapoints
                 if (datacompass1.Count > 100 && lastlsq.Second != DateTime.Now.Second)
                 {
                     lastlsq = DateTime.Now;
@@ -288,7 +285,7 @@ namespace MissionPlanner
                     }
                 }
 
-                // run lsq every seconds when more than 100 datapoints
+                // run lsq every second when more than 100 datapoints
                 if (datacompass2.Count > 100 && lastlsq2.Second != DateTime.Now.Second)
                 {
                     lastlsq2 = DateTime.Now;
@@ -306,10 +303,7 @@ namespace MissionPlanner
                     }
                 }
 
-                HIL.Vector3 point;
-
                 // add to sphere with center correction
-                point = new HIL.Vector3(rawmx, rawmy, rawmz) + centre;
                 ((ProgressReporterSphere)sender).sphere1.AddPoint(new OpenTK.Vector3(rawmx, rawmy, rawmz));
                 ((ProgressReporterSphere)sender).sphere1.AimClear();
 
@@ -322,6 +316,10 @@ namespace MissionPlanner
                     ((ProgressReporterSphere)sender).sphere2.AddPoint(new OpenTK.Vector3(raw2mx, raw2my, raw2mz));
                     ((ProgressReporterSphere)sender).sphere2.AimClear();
                 }
+                
+                HIL.Vector3 point;
+
+                point = new HIL.Vector3(rawmx, rawmy, rawmz) + centre;
 
                 //find the mean radius                    
                 float radius = 0;
@@ -334,13 +332,13 @@ namespace MissionPlanner
 
                 //test that we can find one point near a set of points all around the sphere surface
                 string displayresult = "";
-                int factor = 4; // 4 point check 16 points
+                int factor = 3; // 4 point check 16 points
                 float max_distance = radius / 3; //pretty generouse
-                for (int j = 0; j < factor; j++)
+                for (int j = 0; j <= factor; j++)
                 {
-                    double theta = (Math.PI * (j + 0.5)) / factor;
+                    double theta = (Math.PI * (j +0)) / factor;
 
-                    for (int i = 0; i < factor; i++)
+                    for (int i = 0; i <= factor; i++)
                     {
                         double phi = (2 * Math.PI * i) / factor;
 
@@ -362,12 +360,14 @@ namespace MissionPlanner
                                 break;
                             }
                         }
+                        // draw them all
+                        //((ProgressReporterSphere)sender).sphere1.AimFor(new OpenTK.Vector3((float)point_sphere.x, (float)point_sphere.y, (float)point_sphere.z));
                         if (!found)
                         {
                             displayresult = "more data needed " + (theta * rad2deg).ToString("0") + " " + (phi * rad2deg).ToString("0");
                             ((ProgressReporterSphere)sender).sphere1.AimFor(new OpenTK.Vector3((float)point_sphere.x, (float)point_sphere.y, (float)point_sphere.z));
                             //j = factor;
-                            break;
+                            //break;
                         }
                     }
                 }

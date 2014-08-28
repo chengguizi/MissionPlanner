@@ -78,6 +78,7 @@ namespace MissionPlanner
             GMap.NET.MapProviders.GMapProviders.List.Add(Maps.Custom.Instance);
             GMap.NET.MapProviders.GMapProviders.List.Add(Maps.Earthbuilder.Instance);
             GMap.NET.MapProviders.GMapProviders.List.Add(Maps.MapBox.Instance);
+            GMap.NET.MapProviders.GMapProviders.List.Add(Maps.MapboxNoFly.Instance);
 
             // add proxy settings
             GMap.NET.MapProviders.GMapProvider.WebProxy = WebRequest.GetSystemWebProxy();
@@ -102,6 +103,8 @@ namespace MissionPlanner
                 // invalidate update url
                 System.Configuration.ConfigurationManager.AppSettings["UpdateLocationVersion"] = "";
             }
+
+            //fontgen.dowork();
 
             //adsb.server = "64.93.124.152";
             //adsb.serverport = 31001;
@@ -182,8 +185,8 @@ namespace MissionPlanner
 
          //   return;
              
-
-           // ThemeManager.doxamlgen();
+            if (Debugger.IsAttached)
+                ThemeManager.doxamlgen();
 
             if (File.Exists("simple.txt"))
             {

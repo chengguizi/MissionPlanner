@@ -536,6 +536,7 @@ namespace MissionPlanner.Controls
                     graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
                     graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
                     graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
                     //draw the image into the target bitmap 
                     graphics.DrawImage(img, 0, 0, bitmap.Width, bitmap.Height);
                 }
@@ -1559,7 +1560,7 @@ namespace MissionPlanner.Controls
                             double stime = item.GetValue;
                             int hrs = (int)(stime / (60 * 60));
                             //stime -= hrs * 60 * 60;
-                            int mins = (int)(stime / (60));
+                            int mins = (int)(stime / (60)) % 60;
                             //stime = mins * 60;
                             int secs = (int)(stime % 60);
                             drawstring(graphicsObject, item.Header + hrs.ToString("00") + ":" + mins.ToString("00") + ":" + secs.ToString("00"), font, fontsize + 2, whiteBrush, this.Width / 8, height);

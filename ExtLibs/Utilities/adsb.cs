@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using log4net;
+using System.Threading;
 
 namespace MissionPlanner.Utilities
 {
@@ -25,22 +26,35 @@ namespace MissionPlanner.Utilities
         /// </summary>
         public static event EventHandler UpdatePlanePosition;
 
-        static bool run = true;
+        static bool run = false;
+        static Thread thisthread;
 
         public static string server = "";
-        public static int serverport = 0;
+        public static int serverport = 0;  
 
         public adsb()
         {
-            System.Threading.ThreadPool.QueueUserWorkItem(TryConnect);
+            log.Info("adsb ctor");
+
+            thisthread = new Thread(TryConnect);
+
+            thisthread.IsBackground = true;
+
+            thisthread.Start();
         }
 
         public static void Stop()
         {
+            log.Info("adsb stop");
             run = false;
+
+            if (thisthread != null)
+                thisthread.Join();
+
+            log.Info("adsb stopped");
         }
 
-        void TryConnect(object obj)
+        void TryConnect()
         {
             try
             {
@@ -48,6 +62,8 @@ namespace MissionPlanner.Utilities
             }
             catch { }
             System.Threading.Thread.CurrentThread.IsBackground = true;
+
+            run = true;
 
             while (run)
             {
@@ -139,6 +155,8 @@ namespace MissionPlanner.Utilities
                 GC.Collect();
                 System.Threading.Thread.Sleep(5000);
             }
+
+            log.Info("adsb thread exit");
         }
 
         static Hashtable Planes = new Hashtable();

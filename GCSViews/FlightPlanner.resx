@@ -117,42 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="CHK_altmode.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="CHK_altmode.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="CHK_altmode.Location" type="System.Drawing.Point, System.Drawing">
-    <value>213, 31</value>
-  </data>
-  <data name="CHK_altmode.Size" type="System.Drawing.Size, System.Drawing">
-    <value>82, 17</value>
-  </data>
-  <data name="CHK_altmode.TabIndex" type="System.Int32, mscorlib">
-    <value>49</value>
-  </data>
-  <data name="CHK_altmode.Text" xml:space="preserve">
-    <value>Absolute Alt</value>
-  </data>
-  <data name="&gt;&gt;CHK_altmode.Name" xml:space="preserve">
-    <value>CHK_altmode</value>
-  </data>
-  <data name="&gt;&gt;CHK_altmode.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;CHK_altmode.Parent" xml:space="preserve">
-    <value>panelWaypoints</value>
-  </data>
-  <data name="&gt;&gt;CHK_altmode.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
   <data name="Commands.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="Commands.ColumnHeadersHeight" type="System.Int32, mscorlib">
     <value>30</value>
   </data>
@@ -270,6 +239,7 @@
   <data name="Up.HeaderText" xml:space="preserve">
     <value>Up</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="Up.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -956,6 +926,30 @@
   <data name="&gt;&gt;splitter1.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="CMB_altmode.Location" type="System.Drawing.Point, System.Drawing">
+    <value>213, 31</value>
+  </data>
+  <data name="CMB_altmode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>79, 21</value>
+  </data>
+  <data name="CMB_altmode.TabIndex" type="System.Int32, mscorlib">
+    <value>54</value>
+  </data>
+  <data name="CMB_altmode.Text" xml:space="preserve">
+    <value>Relative</value>
+  </data>
+  <data name="&gt;&gt;CMB_altmode.Name" xml:space="preserve">
+    <value>CMB_altmode</value>
+  </data>
+  <data name="&gt;&gt;CMB_altmode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;CMB_altmode.Parent" xml:space="preserve">
+    <value>panelWaypoints</value>
+  </data>
+  <data name="&gt;&gt;CMB_altmode.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="CHK_splinedefault.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -984,7 +978,7 @@
     <value>panelWaypoints</value>
   </data>
   <data name="&gt;&gt;CHK_splinedefault.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="label17.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1014,7 +1008,7 @@
     <value>panelWaypoints</value>
   </data>
   <data name="&gt;&gt;label17.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="TXT_altwarn.Location" type="System.Drawing.Point, System.Drawing">
     <value>482, 35</value>
@@ -1038,7 +1032,7 @@
     <value>panelWaypoints</value>
   </data>
   <data name="&gt;&gt;TXT_altwarn.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="BUT_Add.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -1591,6 +1585,12 @@
   </data>
   <data name="loadPolygonToolStripMenuItem.Text" xml:space="preserve">
     <value>Load Polygon</value>
+  </data>
+  <data name="fromSHPToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>174, 22</value>
+  </data>
+  <data name="fromSHPToolStripMenuItem.Text" xml:space="preserve">
+    <value>From SHP</value>
   </data>
   <data name="polygonToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>166, 22</value>
@@ -2348,6 +2348,12 @@
   <data name="&gt;&gt;areaToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;createSplineCircleToolStripMenuItem.Name" xml:space="preserve">
+    <value>createSplineCircleToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;createSplineCircleToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;mapToolToolStripMenuItem.Name" xml:space="preserve">
     <value>mapToolToolStripMenuItem</value>
   </data>
@@ -2504,10 +2510,10 @@
   <data name="&gt;&gt;timer1.Type" xml:space="preserve">
     <value>System.Windows.Forms.Timer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;createSplineCircleToolStripMenuItem.Name" xml:space="preserve">
-    <value>createSplineCircleToolStripMenuItem</value>
+  <data name="&gt;&gt;fromSHPToolStripMenuItem.Name" xml:space="preserve">
+    <value>fromSHPToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;createSplineCircleToolStripMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;fromSHPToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">

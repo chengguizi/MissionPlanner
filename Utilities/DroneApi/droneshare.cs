@@ -1,4 +1,5 @@
 ﻿using fastJSON;
+using log4net;
 using MissionPlanner.Controls;
 using System;
 using System.Collections.Generic;
@@ -6,42 +7,16 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Web;
 using System.Windows.Forms;
 
-namespace MissionPlanner.Utilities
+namespace MissionPlanner.Utilities.DroneApi
 {
-
-
     public class droneshare
     {
-        public class APIConstants
-        {
-            /**
-             * The default world wide drone broker
-             */
-            public static String DEFAULT_SERVER = "api.3drobotics.com";
-
-
-            public static String URL_BASE = "https://" + DEFAULT_SERVER;
-
-
-            /**
-             * If using a raw TCP link to the server, use this port number
-             */
-            public static int DEFAULT_TCP_PORT = 5555;
-
-
-            public static String ZMQ_URL = "tcp://" + DEFAULT_SERVER + ":5556";
-
-
-            public static String TLOG_MIME_TYPE = "application/vnd.mavlink.tlog";
-
-            // Do not use this key in your own applications - please register your own.
-            // https://developer.3drobotics.com/
-            public static String apiKey = "614ca8bd.4d084b822a53c6eccb642271db04c937";
-        }
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static string ToQueryString(NameValueCollection nvc)
         {
@@ -107,23 +82,7 @@ namespace MissionPlanner.Utilities
             mav.getHeartBeat();
             mav.Close();
 
-            string guid = Guid.NewGuid().ToString();
-
-            switch (mav.MAV.cs.firmware)
-            {
-                case MainV2.Firmwares.ArduCopter2:
-                    guid = MainV2.config["copter_guid"].ToString();
-                    break;
-                case MainV2.Firmwares.ArduPlane:
-                    guid = MainV2.config["plane_guid"].ToString();
-                    break;
-                case MainV2.Firmwares.ArduRover:
-                    guid = MainV2.config["rover_guid"].ToString();
-                    break;
-            }
-
-
-            string viewurl = Utilities.droneshare.doUpload(file, droneshareusername, dronesharepassword, guid, Utilities.droneshare.APIConstants.apiKey);
+            string viewurl = Utilities.DroneApi.droneshare.doUpload(file, droneshareusername, dronesharepassword, mav.MAV.Guid , Utilities.DroneApi.APIConstants.apiKey);
 
             if (viewurl != "")
             {
@@ -131,7 +90,7 @@ namespace MissionPlanner.Utilities
                 {
                     System.Diagnostics.Process.Start(viewurl);
                 }
-                catch (Exception ex) { CustomMessageBox.Show("Failed to open url "+ viewurl); }
+                catch (Exception ex) { log.Error(ex); CustomMessageBox.Show("Failed to open url " + viewurl); }
             }
         }
 
@@ -148,6 +107,8 @@ namespace MissionPlanner.Utilities
 
             try
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
                 // http post
                 string JSONresp = UploadFilesToRemoteUrl(webAppUploadUrl, file, @params);
 
@@ -200,12 +161,19 @@ namespace MissionPlanner.Utilities
             catch (WebException ex)
             {
                 var answer = ex.Response as HttpWebResponse;
-                MessageBox.Show(answer.StatusDescription);
+                if (answer != null)
+                    MessageBox.Show(answer.StatusDescription);
+                else
+                    MessageBox.Show("Failed to upload\n" + ex.ToString());
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 throw;
+            }
+            finally
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
             }
 
             return "";
@@ -214,8 +182,6 @@ namespace MissionPlanner.Utilities
 
         public static string UploadFilesToRemoteUrl(string url, string file, NameValueCollection nvc)
         {
-
-            long length = 0;
             string boundary = "----------------------------" + DateTime.Now.Ticks.ToString("x");
 
 
@@ -225,6 +191,7 @@ namespace MissionPlanner.Utilities
             httpWebRequest2.KeepAlive = true;
             httpWebRequest2.Credentials = System.Net.CredentialCache.DefaultCredentials;
             httpWebRequest2.Accept = "application/json";
+            httpWebRequest2.Timeout = 5000;
 
 
 

@@ -21,9 +21,9 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         public ConfigHWSonar()
         {
             InitializeComponent();
-        }
 
-      
+            CMB_sonartype.setup(Utilities.ParameterMetaDataRepository.GetParameterOptionsInt("SONAR_TYPE"), "SONAR_TYPE", MainV2.comPort.MAV.param);
+        }
 
         private void CHK_enablesonar_CheckedChanged(object sender, EventArgs e)
         {
@@ -43,24 +43,6 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             catch { CustomMessageBox.Show("Set SONAR_ENABLE Failed"); }
         }
 
-      
-        private void CMB_sonartype_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (startup)
-                return;
-            try
-            {
-                if (MainV2.comPort.MAV.param["SONAR_TYPE"] == null)
-                {
-                    CustomMessageBox.Show("Not Available on " + MainV2.comPort.MAV.cs.firmware.ToString());
-                }
-                else
-                {
-                    MainV2.comPort.setParam("SONAR_TYPE", ((ComboBox)sender).SelectedIndex);
-                }
-            }
-            catch { CustomMessageBox.Show("Set SONAR_TYPE Failed"); }
-        }
 
         public void Activate()
         {
@@ -82,7 +64,11 @@ namespace MissionPlanner.GCSViews.ConfigurationView
 
             if (MainV2.comPort.MAV.param["SONAR_TYPE"] != null)
             {
-                CMB_sonartype.SelectedIndex = int.Parse(MainV2.comPort.MAV.param["SONAR_TYPE"].ToString());
+                try
+                {
+                    CMB_sonartype.SelectedIndex = int.Parse(MainV2.comPort.MAV.param["SONAR_TYPE"].ToString());
+                }
+                catch { }
             }
 
             startup = false;

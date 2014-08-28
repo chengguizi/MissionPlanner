@@ -218,6 +218,19 @@ namespace MissionPlanner.Utilities
             return new PointLatLngAlt(latout, lngout, this.Alt, this.Tag);
         }
 
+        /// <summary>
+        /// move a point a specific number of meters
+        /// </summary>
+        /// <param name="east"></param>
+        /// <param name="north"></param>
+        /// <returns></returns>
+        public PointLatLngAlt gps_offset(double east, double north)
+        {
+            double bearing = Math.Atan2(east, north) * rad2deg;
+            double distance = Math.Sqrt(Math.Pow(east, 2) + Math.Pow(north, 2));
+            return newpos(bearing, distance);
+        }
+
         public double GetBearing(PointLatLngAlt p2)
         {
             var latitude1 = deg2rad * (this.Lat);

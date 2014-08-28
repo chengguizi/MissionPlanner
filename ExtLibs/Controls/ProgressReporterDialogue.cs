@@ -140,8 +140,9 @@ namespace MissionPlanner.Controls
 
             if (doWorkArgs.CancelRequested && doWorkArgs.CancelAcknowledged)
             {
-                ShowDoneCancelled();
+                //ShowDoneCancelled();
                 Running = false;
+                this.BeginInvoke((MethodInvoker)this.Close);
                 return;
             }
 

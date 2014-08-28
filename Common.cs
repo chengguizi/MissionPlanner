@@ -110,7 +110,7 @@ namespace MissionPlanner
         public GMapMarkerADSBPlane(PointLatLng p, float heading)
             : base(p)
         {
-            icon = new Bitmap(icon, new Size(59, 59));
+            icon = new Bitmap(icon, new Size(40, 40));
             this.heading = heading;
             Size = icon.Size;
         }
@@ -324,6 +324,55 @@ namespace MissionPlanner
         }
     }
 
+    [Serializable]
+    public class GMapMarkerHeli : GMapMarker
+    {
+        const float rad2deg = (float)(180 / Math.PI);
+        const float deg2rad = (float)(1.0 / rad2deg);
+
+        private readonly Bitmap icon = global::MissionPlanner.Properties.Resources.heli;
+
+        float heading = 0;
+        float cog = -1;
+        float target = -1;
+
+        public GMapMarkerHeli(PointLatLng p, float heading, float cog, float target)
+            : base(p)
+        {
+            this.heading = heading;
+            this.cog = cog;
+            this.target = target;
+            Size = icon.Size;
+        }
+
+        public override void OnRender(Graphics g)
+        {
+            Matrix temp = g.Transform;
+            g.TranslateTransform(LocalPosition.X, LocalPosition.Y);
+
+            int length = 500;
+            // anti NaN
+            try
+            {
+                g.DrawLine(new Pen(Color.Red, 2), 0.0f, 0.0f, (float)Math.Cos((heading - 90) * deg2rad) * length, (float)Math.Sin((heading - 90) * deg2rad) * length);
+            }
+            catch { }
+            //g.DrawLine(new Pen(Color.Green, 2), 0.0f, 0.0f, (float)Math.Cos((nav_bearing - 90) * deg2rad) * length, (float)Math.Sin((nav_bearing - 90) * deg2rad) * length);
+            g.DrawLine(new Pen(Color.Black, 2), 0.0f, 0.0f, (float)Math.Cos((cog - 90) * deg2rad) * length, (float)Math.Sin((cog - 90) * deg2rad) * length);
+            g.DrawLine(new Pen(Color.Orange, 2), 0.0f, 0.0f, (float)Math.Cos((target - 90) * deg2rad) * length, (float)Math.Sin((target - 90) * deg2rad) * length);
+            // anti NaN
+            try
+            {
+                g.RotateTransform(heading);
+            }
+            catch { }
+            g.DrawImageUnscaled(icon, icon.Width / -2 + 2, icon.Height / -2);
+
+            g.Transform = temp;
+        }
+    }
+
+
     class NoCheckCertificatePolicy : ICertificatePolicy
     {
         public bool CheckValidationResult(ServicePoint srvPoint, X509Certificate certificate, WebRequest request, int certificateProblem)
@@ -514,6 +563,17 @@ namespace MissionPlanner
             {
                 var flightModes = Utilities.ParameterMetaDataRepository.GetParameterOptionsInt("MODE1");
                 return flightModes;
+            }
+            else if (cs.firmware == MainV2.Firmwares.ArduTracker)
+            {
+                var temp = new List<KeyValuePair<int, string>>();
+                temp.Add(new KeyValuePair<int, string>(0, "MANUAL"));
+                temp.Add(new KeyValuePair<int, string>(1, "STOP"));
+                temp.Add(new KeyValuePair<int, string>(2, "SCAN"));
+                temp.Add(new KeyValuePair<int, string>(10, "AUTO"));
+                temp.Add(new KeyValuePair<int, string>(16, "INITIALISING"));
+
+                return temp;
             }
 
             return null;

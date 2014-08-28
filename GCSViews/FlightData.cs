@@ -34,7 +34,6 @@ namespace MissionPlanner.GCSViews
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public static int threadrun = 0;
-        static int mainloopexitsignal = 0;
         int tickStart = 0;
         RollingPointPairList list1 = new RollingPointPairList(1200);
         RollingPointPairList list2 = new RollingPointPairList(1200);
@@ -78,6 +77,8 @@ namespace MissionPlanner.GCSViews
 
         bool huddropout = false;
         bool huddropoutresize = false;
+
+        Thread thisthread;
 
         //      private DockStateSerializer _serializer = null;
 
@@ -130,13 +131,14 @@ namespace MissionPlanner.GCSViews
 
         protected override void Dispose(bool disposing)
         {
+            // stop the thread before disposing element
+            threadrun = 0;
+            if (thisthread != null && thisthread.IsAlive)
+                thisthread.Join();
+
             base.Dispose(disposing);
 
-            threadrun = 0;
             MainV2.comPort.logreadmode = false;
-            // this should make the current pending invokes run
-            System.Threading.Thread.Sleep(100);
-            Application.DoEvents();
             try
             {
                 if (hud1 != null)
@@ -161,12 +163,6 @@ namespace MissionPlanner.GCSViews
             {
                 components.Dispose();
             }
-
-            //Application.DoEvents();
-            //System.Threading.Thread.Sleep(200);
-            //Application.DoEvents();
-
-           
         }
 
         public FlightData()
@@ -433,7 +429,7 @@ namespace MissionPlanner.GCSViews
             {
                 if (!tabControlactions.TabPages.Contains(tabActionsSimple))
                     tabControlactions.TabPages.Add(tabActionsSimple);
-                tabControlactions.TabPages.Remove(tabGauges);
+                //tabControlactions.TabPages.Remove(tabGauges);
                 tabControlactions.TabPages.Remove(tabActions);
                 tabControlactions.TabPages.Remove(tabStatus);
                 tabControlactions.TabPages.Remove(tabServo);
@@ -443,7 +439,7 @@ namespace MissionPlanner.GCSViews
             }
             else
             {
-                tabControlactions.TabPages.Remove(tabGauges);
+                //tabControlactions.TabPages.Remove(tabGauges);
                 tabControlactions.TabPages.Remove(tabActionsSimple);
                 if (!tabControlactions.TabPages.Contains(tabActions))
                     tabControlactions.TabPages.Add(tabActions);
@@ -600,8 +596,6 @@ namespace MissionPlanner.GCSViews
 
         private void FlightData_Load(object sender, EventArgs e)
         {
-            System.Threading.ThreadPool.QueueUserWorkItem(mainloop);
-
             POI.POIModified += POI_POIModified;
 
             TRK_zoom.Minimum = gMapControl1.MapProvider.MinZoom;
@@ -632,6 +626,10 @@ namespace MissionPlanner.GCSViews
             }
 
             hud1.doResize();
+
+            thisthread = new Thread(mainloop);
+            thisthread.IsBackground = true;
+            thisthread.Start();
         }
 
         void POI_POIModified(object sender, EventArgs e)
@@ -639,7 +637,7 @@ namespace MissionPlanner.GCSViews
             POI.UpdateOverlay(poioverlay);
         }
 
-        private void mainloop(object o)
+        private void mainloop()
         {
             //System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
             //System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
@@ -1036,8 +1034,7 @@ namespace MissionPlanner.GCSViews
                                 // add primary route icon
                                 if (routes.Markers.Count != 1)
                                 {
-                                    routes.Markers.Clear();
-                                    routes.Markers.Add(new GMarkerGoogle(currentloc, GMarkerGoogleType.none));
+                                    updateClearRouteMarker(currentloc);
                                 }
 
                                 if (MainV2.comPort.MAV.cs.mode.ToLower() == "guided" && MainV2.comPort.MAV.GuidedMode.x != 0)
@@ -1052,6 +1049,10 @@ namespace MissionPlanner.GCSViews
                                 else if (MainV2.comPort.MAV.cs.firmware == MainV2.Firmwares.ArduRover)
                                 {
                                     routes.Markers[0] = (new GMapMarkerRover(currentloc, MainV2.comPort.MAV.cs.yaw, MainV2.comPort.MAV.cs.groundcourse, MainV2.comPort.MAV.cs.nav_bearing, MainV2.comPort.MAV.cs.target_bearing));
+                                }
+                                else if (MainV2.comPort.MAV.aptype == MAVLink.MAV_TYPE.HELICOPTER)
+                                {
+                                    routes.Markers[0] = (new GMapMarkerHeli(currentloc, MainV2.comPort.MAV.cs.yaw, MainV2.comPort.MAV.cs.groundcourse, MainV2.comPort.MAV.cs.nav_bearing));
                                 }
                                 else
                                 {
@@ -1109,13 +1110,16 @@ namespace MissionPlanner.GCSViews
                             // for testing
                             try
                             {
-                                int testing;
-                                int fixme;
-                                var marker = MissionPlanner.Utilities.GimbalPoint.ProjectPoint();
+                                if ((float)MainV2.comPort.MAV.param["MNT_STAB_PAN"] == 1 &&
+                                    (float)MainV2.comPort.MAV.param["MNT_STAB_TILT"] == 1 &&
+                                    (float)MainV2.comPort.MAV.param["MNT_STAB_ROLL"] == 0)
+                                {
+                                    var marker = MissionPlanner.Utilities.GimbalPoint.ProjectPoint();
 
-                                MainV2.comPort.MAV.cs.GimbalPoint = marker;
+                                    MainV2.comPort.MAV.cs.GimbalPoint = marker;
 
-                                routes.Markers.Add(new GMarkerGoogle(marker, GMarkerGoogleType.blue_dot) { ToolTipText = "Camera Target\n"+marker.ToString(), ToolTipMode = MarkerTooltipMode.OnMouseOver });
+                                    routes.Markers.Add(new GMarkerGoogle(marker, GMarkerGoogleType.blue_dot) { ToolTipText = "Camera Target\n" + marker.ToString(), ToolTipMode = MarkerTooltipMode.OnMouseOver });
+                                }
                             }
                             catch { }
 
@@ -1150,7 +1154,6 @@ namespace MissionPlanner.GCSViews
                 catch (Exception ex) { log.Error(ex); Console.WriteLine("FD Main loop exception " + ex.ToString()); }
             }
             Console.WriteLine("FD Main loop exit");
-            mainloopexitsignal = 1;
         }
 
         private double ConvertToDouble(object input)
@@ -1177,6 +1180,15 @@ namespace MissionPlanner.GCSViews
             }
 
             throw new Exception("Bad Type");
+        }
+
+        private void updateClearRouteMarker(PointLatLng currentloc)
+        {
+            this.Invoke((System.Windows.Forms.MethodInvoker)delegate()
+            {
+                routes.Markers.Clear();
+                routes.Markers.Add(new GMarkerGoogle(currentloc, GMarkerGoogleType.none));
+            });
         }
 
         private void setMapBearing()
@@ -1532,6 +1544,7 @@ namespace MissionPlanner.GCSViews
         {
             ZedGraphTimer.Stop();
             threadrun = 0;
+            thisthread.Join();
             try
             {
                 if (MainV2.comPort.BaseStream.IsOpen)
@@ -1541,12 +1554,6 @@ namespace MissionPlanner.GCSViews
             }
             catch { }
 
-            // allow time for thread to finish
-            DateTime deadline = DateTime.Now.AddSeconds(5);
-            while (mainloopexitsignal == 0 && DateTime.Now < deadline)
-            {
-                System.Threading.Thread.Sleep(50);
-            }
         }
 
         private void BUT_clear_track_Click(object sender, EventArgs e)
@@ -2009,9 +2016,9 @@ namespace MissionPlanner.GCSViews
             {
                 ((Button)sender).Enabled = false;
                 if (MainV2.comPort.MAV.cs.firmware == MainV2.Firmwares.ArduPlane || MainV2.comPort.MAV.cs.firmware == MainV2.Firmwares.Ateryx || MainV2.comPort.MAV.cs.firmware == MainV2.Firmwares.ArduRover)
-                    MainV2.comPort.setMode("Manual");
+                    MainV2.comPort.setMode("Loiter");
                 if (MainV2.comPort.MAV.cs.firmware == MainV2.Firmwares.ArduCopter2)
-                    MainV2.comPort.setMode("Stabilize");
+                    MainV2.comPort.setMode("Loiter");
 
             }
             catch { CustomMessageBox.Show("The Command failed to execute", "Error"); }
@@ -2827,7 +2834,7 @@ namespace MissionPlanner.GCSViews
                 if (ans == false)
                     CustomMessageBox.Show("Error: Arm message rejected by MAV", "Error");
             }
-            catch { CustomMessageBox.Show("Error: No responce from MAV", "Error"); }
+            catch { CustomMessageBox.Show("Error: No response from MAV", "Error"); }
 
 
         }
