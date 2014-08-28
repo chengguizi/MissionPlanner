@@ -259,6 +259,12 @@
     <Compile Include="Arduino\ArduinoSTKv2.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="chmTextForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="chmTextForm.Designer.cs">
+      <DependentUpon>chmTextForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CodeGen.cs" />
     <Compile Include="Comms\CommsSerialScan.cs" />
     <Compile Include="Comms\MAVLinkSerialPort.cs" />
@@ -347,6 +353,12 @@
     </Compile>
     <Compile Include="GCSViews\ConfigurationView\ConfigWizard.Designer.cs">
       <DependentUpon>ConfigWizard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GCSViews\CustomLog.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GCSViews\CustomLog.Designer.cs">
+      <DependentUpon>CustomLog.cs</DependentUpon>
     </Compile>
     <Compile Include="Joystick\Joy_Do_Repeat_Servo.cs">
       <SubType>Form</SubType>
@@ -527,6 +539,9 @@
     <Compile Include="Utilities\ParameterMetaDataRepositoryAutoTest.cs" />
     <Compile Include="Utilities\Firmware.cs" />
     <Compile Include="Utilities\ImageOverFilter.cs" />
+    <EmbeddedResource Include="chmTextForm.resx">
+      <DependentUpon>chmTextForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ConnectionStats.zh-Hans.resx">
       <DependentUpon>ConnectionStats.cs</DependentUpon>
     </EmbeddedResource>
@@ -685,6 +700,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTradHeli.zh-TW.resx">
       <DependentUpon>ConfigTradHeli.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\CustomLog.resx">
+      <DependentUpon>CustomLog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightData.zh-Hant.resx">
       <DependentUpon>FlightData.cs</DependentUpon>
