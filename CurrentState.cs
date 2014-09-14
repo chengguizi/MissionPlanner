@@ -48,6 +48,10 @@ namespace MissionPlanner
         public double lat { get; set; }
         [DisplayText("Longitude (dd)")]
         public double lng { get; set; }
+
+        public double lat_raw { get; set; }
+        public double lng_raw { get; set; }
+
         [DisplayText("Altitude (dist)")]
         public float alt
         {
@@ -514,11 +518,11 @@ namespace MissionPlanner
             _mode = 99999;
             messages = new List<string>();
             useLocation = false;
-            rateattitude = 10;
-            rateposition = 3;
-            ratestatus = 2;
-            ratesensors = 2;
-            raterc = 2;
+            rateattitude = 7;
+            rateposition = 4;
+            ratestatus = 1;
+            ratesensors = 1;
+            raterc = 1;
             datetime = DateTime.MinValue;
             battery_usedmah = 0;
             _lastcurrent = DateTime.MinValue;
@@ -950,6 +954,7 @@ namespace MissionPlanner
 
                         if (!useLocation)
                         {
+                            // CHM - NOTE: THIS GPS RAW IS ONLY ACTIVE WHEN GLOBAL_POSITION_INT FAILS
                             lat = gps.lat * 1.0e-7f;
                             lng = gps.lon * 1.0e-7f;
 
@@ -1018,6 +1023,7 @@ namespace MissionPlanner
                         var radio = bytearray.ByteArrayToStructure<MAVLink.mavlink_radio_status_t>(6);
                         rssi = radio.rssi;
                         remrssi = radio.remrssi;
+                        // CHM - this is the buffer of radio
                         txbuffer = radio.txbuf;
                         rxerrors = radio.rxerrors;
                         noise = radio.noise;
