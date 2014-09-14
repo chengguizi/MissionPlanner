@@ -2349,8 +2349,13 @@ Please check the following
                             {
                                 // check new line is valid
                                 if (buildplaintxtline.Length > 3)
-                                   plaintxtline = buildplaintxtline;
-                                MainV2.consoleString += plaintxtline + Environment.NewLine;
+                                {
+                                    plaintxtline = buildplaintxtline;
+                                    MainV2.consoleString.Add(plaintxtline);
+                                }
+
+                                buildplaintxtline = "";
+                                    
 
                                 //MainV2.TextForm.textBox1.AppendText("dd");
                                 //MainV2.TextForm.Show();
@@ -2370,12 +2375,16 @@ Please check the following
                                 //MissionPlanner.GCSViews.CustomLog.ControlAccessibleObject
                                 //MainV2.View.screens.Find(x => x.Name.Contains("CustomLog")).my;
                                 // reset for next line
-                                buildplaintxtline = "";
+                                
+                            }
+                            else
+                            {
+                                buildplaintxtline += (char)buffer[0];
                             }
                             // CHM the place where console message received
                             TCPConsole.Write(buffer[0]);
                             Console.Write((char)buffer[0]);
-                            buildplaintxtline += (char)buffer[0];
+                            
                         }
                         _bytesReceivedSubj.OnNext(1);
                         count = 0;
@@ -2587,7 +2596,7 @@ Please check the following
                                 packetslost += numLost;
                                 WhenPacketLost.OnNext(numLost);
 
-                                log.InfoFormat("lost pkts new seqno {0} pkts lost {1}", packetSeqNo, numLost);
+                                //log.InfoFormat("lost pkts new seqno {0} pkts lost {1}", packetSeqNo, numLost);
                             }
 
                             packetsnotlost++;
@@ -2638,6 +2647,17 @@ Please check the following
                         log.Info(DateTime.Now + " " + logdata);
 
                         MAV.cs.messages.Add(logdata);
+
+                        // CHM - add
+
+                        if (logdata.Contains("Circle Engaged"))
+                        {
+                            GCSViews.CustomLog.circle_started = true;
+                        }
+                        else if (logdata.Contains("Circle End"))
+                        {
+                            GCSViews.CustomLog.circle_started = false;
+                        }
 
                         if (sev >= 3)
                         {

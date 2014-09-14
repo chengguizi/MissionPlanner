@@ -37,6 +37,7 @@
             this.Debuglabel = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.But_ShowConsole = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.DebugGraph1 = new ZedGraph.ZedGraphControl();
@@ -94,11 +95,19 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.But_ShowConsole);
             this.tabPage1.Controls.Add(this.myGPSlog);
             this.tabPage1.Controls.Add(this.button1);
             resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // But_ShowConsole
+            // 
+            resources.ApplyResources(this.But_ShowConsole, "But_ShowConsole");
+            this.But_ShowConsole.Name = "But_ShowConsole";
+            this.But_ShowConsole.UseVisualStyleBackColor = true;
+            this.But_ShowConsole.Click += new System.EventHandler(this.But_ShowConsole_Click);
             // 
             // tabPage2
             // 
@@ -200,5 +209,6 @@
         private System.Windows.Forms.Label txt_ch6;
         private System.Windows.Forms.Timer tim_ch6;
         public System.Windows.Forms.TextBox myGPSlog;
+        private System.Windows.Forms.Button But_ShowConsole;
     }
 }

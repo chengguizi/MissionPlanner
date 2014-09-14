@@ -163,7 +163,7 @@
     <value>Vertical</value>
   </data>
   <data name="myGPSlog.Size" type="System.Drawing.Size, System.Drawing">
-    <value>815, 357</value>
+    <value>886, 357</value>
   </data>
   <data name="myGPSlog.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -178,7 +178,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;myGPSlog.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <metadata name="timer1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
@@ -208,7 +208,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;button1.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="Debuglabel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -240,6 +240,30 @@
   <data name="&gt;&gt;Debuglabel.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="But_ShowConsole.Location" type="System.Drawing.Point, System.Drawing">
+    <value>697, 369</value>
+  </data>
+  <data name="But_ShowConsole.Size" type="System.Drawing.Size, System.Drawing">
+    <value>103, 22</value>
+  </data>
+  <data name="But_ShowConsole.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="But_ShowConsole.Text" xml:space="preserve">
+    <value>Show Console</value>
+  </data>
+  <data name="&gt;&gt;But_ShowConsole.Name" xml:space="preserve">
+    <value>But_ShowConsole</value>
+  </data>
+  <data name="&gt;&gt;But_ShowConsole.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;But_ShowConsole.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="&gt;&gt;But_ShowConsole.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
@@ -247,7 +271,7 @@
     <value>3, 3, 3, 3</value>
   </data>
   <data name="tabPage1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>856, 394</value>
+    <value>913, 394</value>
   </data>
   <data name="tabPage1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -301,7 +325,7 @@
     <value>DebugGraph1</value>
   </data>
   <data name="&gt;&gt;DebugGraph1.Type" xml:space="preserve">
-    <value>ZedGraph.ZedGraphControl, ZedGraph, Version=5.1.5.34353, Culture=neutral, PublicKeyToken=null</value>
+    <value>ZedGraph.ZedGraphControl, ZedGraph, Version=5.1.5.41341, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;DebugGraph1.Parent" xml:space="preserve">
     <value>tabPage2</value>
@@ -316,7 +340,7 @@
     <value>3, 3, 3, 3</value>
   </data>
   <data name="tabPage2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>856, 394</value>
+    <value>913, 394</value>
   </data>
   <data name="tabPage2.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -343,7 +367,7 @@
     <value>3, 3, 3, 3</value>
   </data>
   <data name="tabPage3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>856, 394</value>
+    <value>913, 394</value>
   </data>
   <data name="tabPage3.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -367,7 +391,7 @@
     <value>31, 30</value>
   </data>
   <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>864, 420</value>
+    <value>921, 420</value>
   </data>
   <data name="tabControl1.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -439,7 +463,7 @@
     <value>0, 0, 0, 0</value>
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1000, 450</value>
+    <value>1001, 455</value>
   </data>
   <data name="&gt;&gt;timer1.Name" xml:space="preserve">
     <value>timer1</value>

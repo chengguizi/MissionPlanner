@@ -15,6 +15,7 @@ namespace MissionPlanner.GCSViews
 {
     public partial class CustomLog : MyUserControl, IActivate
     {
+        public static bool circle_started { get; set; }
         int tickStart = 0;
 
         List<RollingPointPairList> list = new List<RollingPointPairList>();
@@ -26,6 +27,8 @@ namespace MissionPlanner.GCSViews
             InitializeComponent();
 
             CreateChart(DebugGraph1, "Debug Plot", "Time", "Data");
+
+            circle_started = false;
 
         }
 
@@ -95,8 +98,10 @@ namespace MissionPlanner.GCSViews
 
         int timercount = 0;
         bool last_armed = true;
+        bool last_circle_started = false;
         private void timer1_Tick(object sender, EventArgs e)
         {
+            
             
                 ///MainV2.speechEngine.SpeakAsync("Speak test");
             ///
@@ -111,11 +116,19 @@ namespace MissionPlanner.GCSViews
                 if(last_armed)
                 {
                     label1.Text = "==========ARMED==========";
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"D:\SkyDrive\Y3S1\MDP\GPSlog.txt", true))
+                    {
+                        file.WriteLine("<<<<<<<<<<<<<<<< New Session at " + DateTime.Now.ToShortDateString() + DateTime.Now.ToLongTimeString() + " <<<<<<<<<<<<<<<<");
+                    }
                     myGPSlog.Clear();
                 }
                 else
                 {
                     label1.Text = "=========DISARMED=========";
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"D:\SkyDrive\Y3S1\MDP\GPSlog.txt", true))
+                    {
+                        file.WriteLine(">>>>>>>>>>>>>>>> Session Closed at " + DateTime.Now.ToShortDateString() + DateTime.Now.ToLongTimeString() + " >>>>>>>>>>>>>>>>");
+                    }
                 }
                 timercount = 0;
                 return;
@@ -125,16 +138,54 @@ namespace MissionPlanner.GCSViews
                 timercount = 0;
                 return;
             }
+
+            String curr_mode;
+            switch (MainV2.comPort.MAV.cs.mode)
+            {
+                case "Auto":
+                    curr_mode = "0";
+                    break;
+                case "Guided":
+                    curr_mode = "1";
+                    break;
+                case "RTL":
+                    curr_mode = "2";
+                    break;
+                default:
+                    return;
+            }
+
+            if (circle_started == true)
+            {
+                if (curr_mode == "0")
+                    curr_mode = "3";
+                else
+                    circle_started = false;
+            }
+
+            if (circle_started != last_circle_started)
+            {
+                last_circle_started = circle_started;
+                timercount = 0;
+            }
+                
+
             timercount++;
             String mystring;
             mystring = timercount.ToString();
-            mystring += " " + MainV2.comPort.MAV.cs.lat.ToString() + " "+ MainV2.comPort.MAV.cs.lng.ToString();
-            mystring += " " + MainV2.comPort.MAV.cs.mode ;
+            mystring += " " + MainV2.comPort.MAV.cs.lat.ToString("F9") + " " + MainV2.comPort.MAV.cs.lng.ToString("F9") + " " + curr_mode;
+
+
+            // 0:Stabilize,1:Acro,2:AltHold,3:Auto,4:Guided,5:Loiter,6:RTL,7:Circle,9:Land,10:OF_Loiter,11:Drift,13:Sport
             
             
 
-            myGPSlog.AppendText(mystring);
-            myGPSlog.AppendText(Environment.NewLine);
+            myGPSlog.AppendText(mystring + Environment.NewLine);
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"D:\SkyDrive\Y3S1\MDP\GPSlog.txt", true))
+            {
+                file.WriteLine(mystring);
+            }
             
         }
 
@@ -360,6 +411,11 @@ namespace MissionPlanner.GCSViews
         }
 
         public String myTextBox { set { myGPSlog.AppendText(value); } }
+
+        private void But_ShowConsole_Click(object sender, EventArgs e)
+        {
+            MainV2.TextForm.Show();
+        }
 
 
     }

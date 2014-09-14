@@ -33,8 +33,10 @@ namespace MissionPlanner
 {
     public partial class MainV2 : Form
     {
+        
         public static chmTextForm TextForm;
-        public static String consoleString;
+        public static List<String> consoleString;
+        static String lastString = "";
         private static readonly ILog log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -616,7 +618,8 @@ namespace MissionPlanner
             }
 
             TextForm = new chmTextForm();
-            consoleString = "";
+            consoleString = new List<string>();
+            consoleString.Clear();
         }
 
         private void BGLoadAirports(object nothing)
@@ -791,16 +794,23 @@ namespace MissionPlanner
                     return;
                 }
             }
-            if (comPort.BaseStream.IsOpen)
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"D:\SkyDrive\Y3S1\MDP\MPlogfile.txt", true))
             {
-                TextForm.textBox1.Text = consoleString;
-                TextForm.Show();
-                //comPort.myMAVform.ShowDialog();
-                //MessageBox.Show(comPort.myMAVform.textBox1.Text);
-                //File.WriteAllText(@"D:\mavlink_console.txt", comPort.myMAVform.textBox1.Text);
+                if (comPort.BaseStream.IsOpen)
+                {
+                    file.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>Session Closed>>>>>>>>>>>>>>>>>>>>>>");
+                    file.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString() + ">>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                }
+                else
+                {
+                    file.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Session OPEN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                    file.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString() + "<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                }
             }
-                
-                    
+            
+            
+            TextForm.Show();        
 
             try
             {
@@ -2689,6 +2699,26 @@ namespace MissionPlanner
         private void readonlyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MainV2.comPort.ReadOnly = readonlyToolStripMenuItem.Checked;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            
+            if (TextForm != null)
+            {
+                if (consoleString.Count>0)
+                {
+                    TextForm.textBox1.AppendText(consoleString[0] + Environment.NewLine);
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"D:\SkyDrive\Y3S1\MDP\MPlogfile.txt", true))
+                    {
+                        file.WriteLine(DateTime.Now.ToLongTimeString() + ":  " +  consoleString[0]);
+                    }
+                    
+                    consoleString.RemoveAt(0);
+                    
+                }
+            }
+                
         }    
     }
 }

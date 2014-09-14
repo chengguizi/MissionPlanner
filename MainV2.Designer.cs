@@ -51,6 +51,7 @@ namespace MissionPlanner
             this.MenuDonate = new System.Windows.Forms.ToolStripMenuItem();
             this.menu = new MissionPlanner.Controls.MyButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.MainMenu.SuspendLayout();
             this.CTX_mainmenu.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -213,6 +214,12 @@ namespace MissionPlanner
             this.panel1.Name = "panel1";
             this.panel1.MouseLeave += new System.EventHandler(this.MainMenu_MouseLeave);
             // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 10;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // MainV2
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -253,5 +260,6 @@ namespace MissionPlanner
         public System.Windows.Forms.MenuStrip MainMenu;
         private System.Windows.Forms.ToolStripMenuItem fullScreenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem readonlyToolStripMenuItem;
+        private System.Windows.Forms.Timer timer1;
     }
 }
