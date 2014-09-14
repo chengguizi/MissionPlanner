@@ -49,9 +49,9 @@ namespace MissionPlanner.Controls.Waypoints
         float _slow_down_dist; // vehicle should begin to slow down once it is within this distance from the destination
         // To-Do: this should be used for straight segments as well
         float _yaw;                   // heading according to yaw
-        private float _wp_accel_cms = 100; // 1 m/s/s
+        private float _wp_accel_cms = 400; // 1 m/s/s
         private uint32_t _wp_last_update;
-        private float _wp_speed_cms = 600; // 6 m/s
+        private float _wp_speed_cms = 2000; // 6 m/s
         public Vector3 _origin;
         public Vector3 _destination;
         private object _wp_speed_up_cms = 100;
@@ -165,7 +165,7 @@ namespace MissionPlanner.Controls.Waypoints
             if (stopped_at_start || !prev_segment_exists)
             {
                 // if vehicle is stopped at the origin, set origin velocity to 0.1 * distance vector from origin to destination
-                _spline_origin_vel = (destination - origin) * 0.1f;
+                _spline_origin_vel = (destination - origin).normalized();
                 _spline_time = 0.0f;
                 _spline_vel_scaler = 0.0f;
             }
@@ -176,7 +176,9 @@ namespace MissionPlanner.Controls.Waypoints
                 {
                     // previous segment is straight, vehicle is moving so vehicle should fly straight through the origin
                     // before beginning it's spline path to the next waypoint. Note: we are using the previous segment's origin and destination
-                    _spline_origin_vel = (_destination - _origin);
+                    _spline_origin_vel = (_destination - _origin)*2.0f;
+
+
                     _spline_time = 0.0f;	// To-Do: this should be set based on how much overrun there was from straight segment?
                     _spline_vel_scaler = 0.0f;    // To-Do: this should be set based on speed at end of prev straight segment?
                 }
@@ -187,14 +189,8 @@ namespace MissionPlanner.Controls.Waypoints
                     // Note: previous segment will leave destination velocity parallel to position difference vector
                     //       from previous segment's origin to this segment's destination)
                     _spline_origin_vel = _spline_destination_vel;
-                    if (_spline_time > 1.0f && _spline_time < 1.1f)
-                    {    // To-Do: remove hard coded 1.1f
-                        _spline_time -= 1.0f;
-                    }
-                    else
-                    {
+
                         _spline_time = 0.0f;
-                    }
                     _spline_vel_scaler = 0.0f;
                 }
             }
@@ -205,25 +201,36 @@ namespace MissionPlanner.Controls.Waypoints
 
                 case spline_segment_end_type.SEGMENT_END_STOP:
                     // if vehicle stops at the destination set destination velocity to 0.1 * distance vector from origin to destination
-                    _spline_destination_vel = (destination - origin) * 0.1f;
+                    _spline_destination_vel = (destination - origin).normalized();
                     _flags.fast_waypoint = false;
                     break;
 
                 case spline_segment_end_type.SEGMENT_END_STRAIGHT:
                     // if next segment is straight, vehicle's final velocity should face along the next segment's position
-                    _spline_destination_vel = (next_destination - destination);
+                    _spline_destination_vel = (next_destination - destination)*2.0f;
+
+
                     _flags.fast_waypoint = true;
                     break;
 
                 case spline_segment_end_type.SEGMENT_END_SPLINE:
                     // if next segment is splined, vehicle's final velocity should face parallel to the line from the origin to the next destination
-                    _spline_destination_vel = (next_destination - origin);
+                    //_spline_destination_vel = (next_destination - origin);
+
+                    double l1 = (destination - origin).length();
+		            double l2 = (next_destination - destination).length();
+
+		            _spline_destination_vel = (destination - origin).normalized()*(l2 / (l1 + l2)) + 
+			            (next_destination - destination).normalized()*(l1 / (l1 + l2));
+		            _spline_destination_vel.normalize();
+		            _spline_destination_vel *= (l1+l2)/2.0f;
+
                     _flags.fast_waypoint = true;
                     break;
             }
 
             // code below ensures we don't get too much overshoot when the next segment is short
-            float vel_len = (float)((_spline_origin_vel + _spline_destination_vel).length());
+            float vel_len = (float)((_spline_origin_vel - _spline_destination_vel).length());
             float pos_len = (float)(destination - origin).length() * 4.0f;
             if (vel_len > pos_len)
             {

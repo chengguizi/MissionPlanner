@@ -1267,7 +1267,11 @@ namespace MissionPlanner.GCSViews
 
                         for (int no = 1; no < (splinepnts.Count-1); no++)
                         {
-                            MissionPlanner.Controls.Waypoints.Spline2.spline_segment_end_type segtype = MissionPlanner.Controls.Waypoints.Spline2.spline_segment_end_type.SEGMENT_END_STRAIGHT;
+                            
+                            MissionPlanner.Controls.Waypoints.Spline2.spline_segment_end_type segtype = MissionPlanner.Controls.Waypoints.Spline2.spline_segment_end_type.SEGMENT_END_STOP;
+
+                            if (no == (splinepnts.Count - 2) && (a != fullpointlist.Count - 1))
+                                segtype = MissionPlanner.Controls.Waypoints.Spline2.spline_segment_end_type.SEGMENT_END_STRAIGHT;
 
                             if (no < (splinepnts.Count - 2)) {
                                 segtype = MissionPlanner.Controls.Waypoints.Spline2.spline_segment_end_type.SEGMENT_END_SPLINE;
@@ -1279,7 +1283,7 @@ namespace MissionPlanner.GCSViews
 
                             while (sp._flags.reached_destination == false)
                             {
-                                float t = 1f;
+                                float t = 0.1f;
                                 //sp.update_spline();
                                 sp.advance_spline_target_along_track(t);
                                // Console.WriteLine(sp.pv_vector_to_location(sp.target_pos).ToString());
@@ -1307,12 +1311,19 @@ namespace MissionPlanner.GCSViews
                          */
 
                         lastnonspline = fullpointlist[a];
+
+                        lastpnt2 = fullpointlist[a-1];
+                        lastpnt = fullpointlist[a];
+                    }
+                    else
+                    {
+                        lastpnt2 = lastpnt;
+                        lastpnt = fullpointlist[a];
                     }
 
                     wproute.Add(fullpointlist[a]);
 
-                    lastpnt2 = lastpnt;
-                    lastpnt = fullpointlist[a];
+                    
                 }
             }
              /*
